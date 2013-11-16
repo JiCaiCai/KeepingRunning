@@ -12,7 +12,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.roy.sherloktest.R;
+import com.project.keepingrunning.R;
 
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener, OnPageChangeListener {
 	
