@@ -1,4 +1,4 @@
-package com.project.keeprunning.object;
+package com.project.keepingrunning.object;
 
 public class ActivityPath {
 	private int id;

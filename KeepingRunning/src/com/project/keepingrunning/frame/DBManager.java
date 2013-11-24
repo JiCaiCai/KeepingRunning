@@ -6,8 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.project.keeprunning.object.ActivityPath;
-import com.project.keeprunning.object.RunActivity;
+import com.project.keepingrunning.object.ActivityPath;
+import com.project.keepingrunning.object.RunActivity;
 
 public class DBManager {
 	private DBHelper helper;  

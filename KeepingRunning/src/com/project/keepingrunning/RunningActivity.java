@@ -21,8 +21,8 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.project.keepingrunning.frame.Constant;
 import com.project.keepingrunning.frame.DBManager;
-import com.project.keeprunning.object.ActivityPath;
-import com.project.keeprunning.object.RunActivity;
+import com.project.keepingrunning.object.ActivityPath;
+import com.project.keepingrunning.object.RunActivity;
 
 public class RunningActivity extends SherlockActivity {
 

@@ -1,4 +1,4 @@
-package com.project.keeprunning.object;
+package com.project.keepingrunning.object;
 
 public class RunActivity {
 	private int id;
