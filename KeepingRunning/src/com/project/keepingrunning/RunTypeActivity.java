@@ -12,9 +12,9 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.project.keepingrunning.R;
+import com.actionbarsherlock.view.MenuItem;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener, OnPageChangeListener {
+public class RunTypeActivity extends SherlockFragmentActivity implements ActionBar.TabListener, OnPageChangeListener {
 	
 	// top tab titles
 	private String [] mTabTitles; 
@@ -26,13 +26,12 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	private ActionBar mActionBar; 
 	
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_run_type);
 		
-		mTabTitles = getResources().getStringArray(R.array.mode);
+		mTabTitles = getResources().getStringArray(R.array.run_type);
 		mFragmentList =  new ArrayList<Fragment>();
 		
 		mViewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -45,9 +44,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         mActionBar = getSupportActionBar(); 
         
         // hide Title  
-        mActionBar.setDisplayShowTitleEnabled(false);  
+        mActionBar.setDisplayShowTitleEnabled(true);  
         // hide Home LOGO  
-        mActionBar.setDisplayShowHomeEnabled(false);  
+        mActionBar.setDisplayShowHomeEnabled(true); 
+        // show arrow
+        mActionBar.setDisplayHomeAsUpEnabled(true);
         // Tab navigation mode 
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
@@ -59,17 +60,47 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
              mActionBar.addTab(tab, i);  
         }
         
-        //将Fragment加入到List中，并将Tab的title传递给Fragment  
-        for(int i=0; i<mTabTitles.length; i++){  
-            Fragment fragment = new ItemFragment();  
-            Bundle args = new Bundle();  
-            args.putString("arg", mTabTitles[i]);  
-            fragment.setArguments(args);  
+        
+        // the first type of running
+        Fragment typeOne = new ItemFragment();  
+        Bundle args = new Bundle();  
+        args.putString("run_type", getString(R.string.run_type_one));  
+        args.putInt("layout_id", R.layout.fragment_run_type_one);
+        typeOne.setArguments(args);  
               
-            mFragmentList.add(fragment);  
-        }  
+        mFragmentList.add(typeOne);  
+        
+        // the second type of running
+        typeOne = new ItemFragment();  
+        args = new Bundle();  
+        args.putString("run_type", getString(R.string.run_type_two));  
+        args.putInt("layout_id", R.layout.fragment_run_type_two);
+        typeOne.setArguments(args);  
+              
+        mFragmentList.add(typeOne);  
+        
+        // the third type of running
+        typeOne = new ItemFragment();  
+        args = new Bundle();  
+        args.putString("run_type", getString(R.string.run_type_three));  
+        args.putInt("layout_id", R.layout.fragment_run_type_three);
+        typeOne.setArguments(args);  
+              
+        mFragmentList.add(typeOne); 
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {  
+        case android.R.id.home:  
+        	finish();
+            break;  
+        default:  
+            break;  
+        }  
+        return super.onOptionsItemSelected(item);  
+	}
 
 
 	@Override

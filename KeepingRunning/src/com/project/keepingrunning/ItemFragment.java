@@ -7,13 +7,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.project.keepingrunning.map.PathMapActivity;
 
 public class ItemFragment extends SherlockFragment {
-
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -24,28 +26,162 @@ public class ItemFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View contextView = inflater.inflate(R.layout.fragment_item, container, false);  
-        TextView mTextView = (TextView) contextView.findViewById(R.id.textview); 
-        Button mToMap = (Button) contextView.findViewById(R.id.tomap);
-        
-        mToMap.setOnClickListener(new OnClickListener() {
+		// obtain the data
+        Bundle mBundle = getArguments();  
+		int layoutID = mBundle.getInt("layout_id");
+		View contextView = inflater.inflate(layoutID, container, false);
+		
+		switch (layoutID) {
+		case R.layout.fragment_run_type_one:
+			initTypeOne(contextView);
+			break;
+		case R.layout.fragment_run_type_two:
+			initTypeTwo(contextView);
+			break;
+		case R.layout.fragment_run_type_three:
+			initTypeThree(contextView);
+			break;
+
+		default:
+			break;
+		}
+		
+        return contextView;  
+	}
+
+	private void initTypeThree(View view) {
+		// TODO Auto-generated method stub
+		SeekBar seekRunDuration = (SeekBar) view.findViewById(R.id.seek_run_length);
+		final TextView runDuration = (TextView) view.findViewById(R.id.run_length);
+		Button run = (Button) view.findViewById(R.id.start_run);
+		
+		run.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent();
-				intent.setClass(getActivity(), PathMapActivity.class);
+				double distance = Double.parseDouble(runDuration.getText().toString());
+				if (distance == 0) {
+					Toast.makeText(getActivity(), "Distance should not be 0", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				Intent intent = new Intent(getActivity(), RunningActivity.class);
+				intent.putExtra("come_from", 3);
+				intent.putExtra("distance", distance);
 				startActivity(intent);
 			}
 		});
-          
-        //获取Activity传递过来的参数  
-        Bundle mBundle = getArguments();  
-        String title = mBundle.getString("arg");
-          
-        mTextView.setText(title);  
-          
-        return contextView;  
+		
+		//  set the initial value of seekbar  
+		seekRunDuration.setMax(200);  
+		seekRunDuration.setProgress(0);  
+        runDuration.setText(formatDouble((double)seekRunDuration.getProgress()/10));  
+		
+        // add listener
+        seekRunDuration.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				runDuration.setText(formatDouble((double)progress/10));  
+			}
+
+		});
+	}
+
+	private void initTypeTwo(View view) {
+		// TODO Auto-generated method stub
+		SeekBar seekRunDuration = (SeekBar) view.findViewById(R.id.seek_run_duration);
+		final TextView runDuration = (TextView) view.findViewById(R.id.run_duration);
+		Button run = (Button) view.findViewById(R.id.start_run);
+		
+		run.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				int time = Integer.parseInt((runDuration.getText().toString()));
+				if (time == 0) {
+					Toast.makeText(getActivity(), "Time should not be 0", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				Intent intent = new Intent(getActivity(), RunningActivity.class);
+				intent.putExtra("come_from", 2);
+				intent.putExtra("time", time);
+				startActivity(intent);
+			}
+		});
+		
+		//  set the initial value of seekbar  
+		seekRunDuration.setMax(300);  
+		seekRunDuration.setProgress(0);  
+        runDuration.setText(seekRunDuration.getProgress()+"");  
+		
+        // add listener
+        seekRunDuration.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				runDuration.setText(progress+"");  
+			}
+		});
+	}
+
+	private void initTypeOne(View view) {
+		// TODO Auto-generated method stub
+		Button run = (Button) view.findViewById(R.id.start_run);
+		
+		run.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getActivity(), RunningActivity.class);
+				intent.putExtra("come_from", 1);
+				startActivity(intent);
+			}
+		});
+	}
+	
+	/**
+	 * format double data to string
+	 * @param value
+	 * @return
+	 */
+	private String formatDouble(double value) {
+		// TODO Auto-generated method stub
+		String str = String.valueOf(value);
+		if (str.indexOf(".") == -1) {
+			str = str + ".0";
+		}
+		return str;
 	}
 	
 }

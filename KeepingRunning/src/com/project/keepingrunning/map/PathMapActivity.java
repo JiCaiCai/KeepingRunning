@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
@@ -30,7 +31,7 @@ public class PathMapActivity extends Activity {
 	 * MKMapViewListener 用于处理地图事件回调
 	 */
 	MKMapViewListener mMapListener = null;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
