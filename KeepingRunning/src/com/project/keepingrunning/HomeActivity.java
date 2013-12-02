@@ -1,14 +1,13 @@
 package com.project.keepingrunning;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-public class HomeActivity extends SherlockActivity {
+public class HomeActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +19,7 @@ public class HomeActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
-		getSupportMenuInflater().inflate(R.menu.menu_home, menu);
+		getMenuInflater().inflate(R.menu.menu_home, menu);
 		return true;
 	}
 

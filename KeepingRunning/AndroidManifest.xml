@@ -33,9 +33,7 @@
 
         <activity
             android:name="com.project.keepingrunning.HomeActivity"
-            android:label="@string/app_name" 
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" 
-            android:screenOrientation="portrait">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,20 +44,15 @@
         <activity
             android:name="com.project.keepingrunning.RunTypeActivity"
             android:label="@string/title_activity_run_type"
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" 
-            android:screenOrientation="portrait">
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
         
-        <activity 
-            android:name="com.project.keepingrunning.map.PathMapActivity"
-            android:screenOrientation="portrait" >
+        <activity android:name="com.project.keepingrunning.map.PathMapActivity" >
         </activity>
         
         <activity
             android:name="com.project.keepingrunning.RunningActivity"
-            android:label="@string/title_activity_running" 
-            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" 
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_running" >
         </activity>
         
     </application>

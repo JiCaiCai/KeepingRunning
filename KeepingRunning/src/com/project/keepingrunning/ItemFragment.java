@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.project.keepingrunning.frame.Constant;
 
 public class ItemFragment extends SherlockFragment {
 	
@@ -67,8 +66,8 @@ public class ItemFragment extends SherlockFragment {
 					return;
 				}
 				Intent intent = new Intent(getActivity(), RunningActivity.class);
-				intent.putExtra(Constant.SOURCE, 3);
-				intent.putExtra(Constant.DISTANCE, distance*1000);
+				intent.putExtra("come_from", 3);
+				intent.putExtra("distance", distance);
 				startActivity(intent);
 			}
 		});
@@ -120,8 +119,8 @@ public class ItemFragment extends SherlockFragment {
 					return;
 				}
 				Intent intent = new Intent(getActivity(), RunningActivity.class);
-				intent.putExtra(Constant.SOURCE, 2);
-				intent.putExtra(Constant.TIME, time*60);
+				intent.putExtra("come_from", 2);
+				intent.putExtra("time", time);
 				startActivity(intent);
 			}
 		});
@@ -165,7 +164,7 @@ public class ItemFragment extends SherlockFragment {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getActivity(), RunningActivity.class);
-				intent.putExtra(Constant.SOURCE, 1);
+				intent.putExtra("come_from", 1);
 				startActivity(intent);
 			}
 		});

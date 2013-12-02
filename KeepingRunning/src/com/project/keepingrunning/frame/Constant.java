@@ -5,8 +5,4 @@ public class Constant {
 	
 	public final static String TABLE_ACTIVITY = "Activities";
 	public final static String TABLE_ACTIVITYPATH = "ActivityPath";
-	
-	public final static String SOURCE = "source";
-	public final static String DISTANCE = "distance";
-	public final static String TIME= "time";
 }
