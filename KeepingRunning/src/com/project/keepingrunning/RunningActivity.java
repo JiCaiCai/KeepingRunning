@@ -2,11 +2,22 @@ package com.project.keepingrunning;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.format.Time;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,10 +41,16 @@ public class RunningActivity extends SherlockActivity {
 	private LocationClient mLocClient;
 	private double mDistance;
 	private int mTime;
-	private Time mRecordTime;
 	private DecimalFormat mDF = null;
 	private DBManager mDBManager = null;
 	private int mActivityID = 0;
+	private Time mRecordTime;
+	private int mTag = 0;
+	private NotificationManager mManager = null;
+	
+	// Timer
+	private static Handler mHandler = null;
+	private Timer mTimer= null;
 	
 	// data
 	private RunActivity runActivity = null;
@@ -43,6 +60,7 @@ public class RunningActivity extends SherlockActivity {
 	private TextView tvUsedTime = null;
 	private TextView tvRunSpeed = null;
 	private TextView tvRunDistance = null;
+	private TextView tvNotification = null;
 	private ProgressBar pbLimitation = null;
 	private Button btnStop = null;
 	
@@ -58,17 +76,19 @@ public class RunningActivity extends SherlockActivity {
 		// TODO Auto-generated method stub
 		mDistance = 0;
 		mTime = 0;
-		mRecordTime = new Time("GMT+8");
+		mRecordTime = new Time();
 		mDF = new DecimalFormat("0.0");
 		mDBManager = new DBManager(this);
 		mActivityID = mDBManager.getRunActivityCount() + 1;
 		runActivity = new RunActivity();
 		activityPaths = new ArrayList<ActivityPath>();
+		mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		
 		// controls
 		tvUsedTime = (TextView) findViewById(R.id.used_time);
 		tvRunSpeed = (TextView) findViewById(R.id.run_speed);
 		tvRunDistance = (TextView) findViewById(R.id.run_distance);
+		tvNotification = (TextView) findViewById(R.id.task_notification);
 		pbLimitation = (ProgressBar) findViewById(R.id.limit_bar);
 		btnStop = (Button) findViewById(R.id.run_stop);
 		
@@ -77,13 +97,89 @@ public class RunningActivity extends SherlockActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				saveDataToDB();
-				finish();
+				showCautious();
 			}
 		});
+		// get data from previous activity
+		mTag = getIntent().getIntExtra(Constant.SOURCE, 0);
+		switch (mTag) {
+		case 1:
+			break;
+		case 2:
+			pbLimitation.setMax(getIntent().getIntExtra(Constant.TIME, 0));
+			break;
+		case 3:
+			pbLimitation.setMax(getIntent().getIntExtra(Constant.DISTANCE, 0));
+			break;
+
+		default:
+			break;
+		}
 		
 		// initialize the locator
 		initLocator();
+		// initialize the timer 
+		initialTimer();
+		// show notification bar
+		showNotification();
+	}
+
+	/**
+	 * show the notification bar
+	 */
+	@SuppressLint("NewApi")
+	private void showNotification() {
+		// TODO Auto-generated method stub
+		Notification.Builder mBuilder = new Notification.Builder(RunningActivity.this)
+			.setSmallIcon(R.drawable.icon)
+			.setContentTitle("5 new message")
+			.setContentText("Test");
+		mBuilder.setTicker("Start your running!");
+		
+		// construct Intent
+		Intent resultIntent = new Intent(this, RunningActivity.class);
+		// Encapsulate Intent
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		
+		mManager.notify(0, mBuilder.build());
+	}
+
+	private void initialTimer() {
+		// TODO Auto-generated method stub
+		mHandler = new Handler() {
+			
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				mTime = msg.what;
+				int min = mTime/60;
+				String strMin = min<10? "0"+min:min+"";
+				int sec = mTime%60;
+				String strSec = sec<10? "0"+sec:sec+"";
+				tvUsedTime.setText("Time: "+ strMin + "'' " + strSec +"'" );
+				if (mTag == 2 && mTime <= pbLimitation.getMax()) {
+					pbLimitation.setProgress(mTime);
+					if (mTime == pbLimitation.getMax()) {
+						tvNotification.setText(getString(R.string.task_notification));
+					}
+				}
+			}
+		};
+		
+		mTimer = new Timer();
+		mTimer.schedule(new TimerTask() {
+			int second = 0;
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Message msg = new Message();
+				msg.what = second++;
+				mHandler.sendMessage(msg);
+			}
+			
+		}, 1000, 1000 );
 	}
 
 	/**
@@ -150,36 +246,6 @@ public class RunningActivity extends SherlockActivity {
 				return;
 			}
 			
-			// test
-			StringBuffer sb = new StringBuffer(256);
-            sb.append("time : ");  
-            sb.append(location.getTime());  
-            sb.append("\nerror code : ");  
-            sb.append(location.getLocType());  
-            sb.append("\nlatitude : ");  
-            sb.append(location.getLatitude());  
-            sb.append("\nlontitude : ");  
-            sb.append(location.getLongitude());  
-            sb.append("\nradius : ");  
-            sb.append(location.getRadius());  
-            sb.append("\ntype : ");
-            sb.append(location.getLocType());
-            sb.append("\nspeed : ");  
-            sb.append(location.getSpeed());  
-            sb.append("\nsatellite : ");  
-            sb.append(location.getSatelliteNumber());  
-            if (location.getLocType() == BDLocation.TypeGpsLocation){  
-                 sb.append("\nspeed : ");  
-                 sb.append(location.getSpeed());  
-                 sb.append("\nsatellite : ");  
-                 sb.append(location.getSatelliteNumber());  
-             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation){  
-                 sb.append("\naddr : ");  
-                 sb.append(location.getAddrStr());  
-             }   
-         
-            Log.e("log", sb.toString()); 
-            
             float[] distance = new float[1];
             if (mLastLoc != null) {
             	// if the type of location is based on network, then use fake data
@@ -203,7 +269,12 @@ public class RunningActivity extends SherlockActivity {
             // update the interface
             tvRunDistance.setText("Distance: " + keepTwoDigits(mDistance/1000) + " km");
             tvRunSpeed.setText("Speed: " + keepTwoDigits(location.getSpeed()) + " m/s");
-            tvUsedTime.setText("Time: "+ "1" + " s");
+            if (mTag == 3 && mDistance <= pbLimitation.getMax()) {
+            	pbLimitation.setProgress((int) mDistance);
+            	if (mDistance > pbLimitation.getMax()) {
+            		tvNotification.setText(getString(R.string.task_notification));
+            	}
+            }
             
             // save those path
             ActivityPath path = new ActivityPath();
@@ -247,8 +318,31 @@ public class RunningActivity extends SherlockActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		mLocClient.stop();
+		mTimer.cancel();
+		mManager.cancelAll();
 		
 		super.onDestroy();
 	}
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if(keyCode == KeyEvent.KEYCODE_BACK) {
+	        showCautious();
+	        return false;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+	
+	void showCautious() {
+		new AlertDialog.Builder(RunningActivity.this).setTitle("Cautious")
+        .setMessage("Finish the activity?")
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            	saveDataToDB();
+            	finish();
+            }})
+        .setNegativeButton("No", null)
+        .create().show();
+	}
 }
