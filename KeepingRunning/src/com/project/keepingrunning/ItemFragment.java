@@ -121,7 +121,7 @@ public class ItemFragment extends SherlockFragment {
 				}
 				Intent intent = new Intent(getActivity(), RunningActivity.class);
 				intent.putExtra(Constant.SOURCE, 2);
-				intent.putExtra(Constant.TIME, time);
+				intent.putExtra(Constant.TIME, time*60);
 				startActivity(intent);
 			}
 		});
