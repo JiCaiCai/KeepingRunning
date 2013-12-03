@@ -22,6 +22,6 @@
     <!-- Running -->
     <string name="title_activity_running">Running</string>
     <string name="preset_task">Progress Achieved:</string>
-    <string name="task_notification">Good job! you finish the task!a</string>
+    <string name="task_notification">Good job! you finish the task!</string>
     
 </resources>
