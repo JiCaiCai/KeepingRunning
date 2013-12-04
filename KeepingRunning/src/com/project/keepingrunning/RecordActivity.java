@@ -109,9 +109,6 @@ public class RecordActivity extends SherlockActivity{
             	mDBManager.deleteRunActivity(id);
             	runActivityList.remove(pos);
             	mySimpleAdapter.notifyDataSetChanged();
-//            	finish();
-//            	Intent intent = new Intent(RecordActivity.this, RecordActivity.class);
-//            	startActivity(intent);
             }})
         .setNegativeButton("No", null)
         .create().show();
