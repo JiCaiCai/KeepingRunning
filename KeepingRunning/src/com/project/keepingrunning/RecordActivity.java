@@ -1,7 +1,6 @@
 package com.project.keepingrunning;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +19,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -84,8 +82,8 @@ public class RecordActivity extends SherlockActivity{
         		String id=map.get(Constant.ID);                 
         		String start_time=map.get(Constant.START_TIME);
         		Intent pathMapIntent = new Intent(RecordActivity.this, PathMapActivity.class);
-        		pathMapIntent.putExtra("id", Integer.valueOf(id));           
-        		pathMapIntent.putExtra("startTime", start_time);
+        		pathMapIntent.putExtra(Constant.ID, Integer.valueOf(id));           
+        		pathMapIntent.putExtra(Constant.START_TIME, start_time);
         		startActivity(pathMapIntent);
         	}                      
         });
@@ -131,7 +129,7 @@ public class RecordActivity extends SherlockActivity{
         	HashMap<String, String> map = new HashMap<String, String>();
         	long duration = getDuration(runActivity);
         	map.put(Constant.DISTANCE, numberFormat.format(runActivity.getDistance()/1000)+"km");             
-        	map.put(Constant.SPEED, numberFormat.format(runActivity.getDistance()/(duration/1000))+"m/s");             
+        	map.put(Constant.SPEED, numberFormat.format(runActivity.getDistance()/(duration/1000.0))+"m/s");             
         	map.put(Constant.START_TIME, Util.formatDateOutPut(runActivity.getStartTime()));             
         	map.put(Constant.SPEND_TIME, getDurationStr(duration));             
         	map.put(Constant.ID, String.valueOf(runActivity.getId()));             

@@ -18,7 +18,7 @@ public class Constant {
 	public final static String LATITUDE = "latitude";
 	public final static String LONGITUDE = "longitude";
 	public final static String RECORD_TIME = "record_time";
-	public final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+	public final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
 	public final static int NOTICE_ID = 3303;
 }

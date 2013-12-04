@@ -9,6 +9,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
@@ -21,52 +24,54 @@ import com.baidu.mapapi.search.MKRoute;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.project.keepingrunning.R;
 import com.project.keepingrunning.frame.AcitvityPathComparator;
+import com.project.keepingrunning.frame.Constant;
 import com.project.keepingrunning.frame.DBManager;
 import com.project.keepingrunning.object.ActivityPath;
 
-public class PathMapActivity extends Activity {
+public class PathMapActivity extends SherlockActivity {
 	private Toast mToast;
 	private BMapManager mBMapManager;
 	/**
-	 * MapView 是地图主控件
+	 * MapView main map view 
 	 */
 	private MapView mMapView = null;
 	/**
-	 * 用MapController完成地图控制
+	 * use MapController to control the map
 	 */
 	private MapController mMapController = null;
 	/**
-	 * MKMapViewListener 用于处理地图事件回调
+	 * MKMapViewListener the handle the event
 	 */
 	MKMapViewListener mMapListener = null;
 	
 	private DBManager mDBManager = null;
+	private ActionBar mActionBar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		/**
-		 * 使用地图sdk前需先初始化BMapManager，这个必须在setContentView()先初始化
+		 * initialize BMapManager
 		 */
 		mBMapManager = new BMapManager(this);
 		
-		//第一个参数是API key,
-		//第二个参数是常用事件监听，用来处理通常的网络错误，授权验证错误等，你也可以不添加这个回调接口
+		//the first parameter is API key,
+		//the second parameter is common event listener
 		mBMapManager.init("170a1e97ef2248b6a5811482c5f4e2ac", new MKGeneralListener() {
 			
-			//授权错误的时候调用的回调函数
+			//this method will be called when the authority is denied 
 			@Override
 			public void onGetPermissionState(int iError) {
 				if (iError ==  MKEvent.ERROR_PERMISSION_DENIED) {
-					showToast("API KEY错误, 请检查！");
+					showToast("Wrong API KEY, please check！");
 	            }
 			}
 			
-			//一些网络状态的错误处理回调函数
+			//this method will handle Network error
 			@Override
 			public void onGetNetworkState(int iError) {
 				if (iError == MKEvent.ERROR_NETWORK_CONNECT) {
-					Toast.makeText(getApplication(), "您的网络出错啦！", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplication(), "Network error！", Toast.LENGTH_LONG).show();
 	            }
 			}
 		});
@@ -76,71 +81,42 @@ public class PathMapActivity extends Activity {
 		
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		
-		  /**
-         * 获取地图控制器
+		 /**
+         * get map controller
          */
         mMapController = mMapView.getController();
-        /**
-         *  设置地图是否响应点击事件  .
-         */
         mMapController.enableClick(true);
-        /**
-         * 设置地图缩放级别
-         */
-        mMapController.setZoom(15);
-        
-        /**
-         * 显示内置缩放控件
-         */
+        mMapController.setZoom(16);
         mMapView.setBuiltInZoomControls(true);
         
         mDBManager = new DBManager(this);
         
         List<GeoPoint> geoPointList = setRoute();
         
-        //设置p地方为中心点
+        //set start point at the center point
         mMapController.setCenter(geoPointList.get(0));
         
         mMapView.regMapViewListener(mBMapManager, new MKMapViewListener() {
-			
         	
-        	/**
-        	 * 地图移动完成时会回调此接口 方法
-        	 */
 			@Override
 			public void onMapMoveFinish() {
-				showToast("地图移动完毕！");
 			}
 			
-			/**
-			 * 地图加载完毕回调此接口方法
-			 */
 			@Override
 			public void onMapLoadFinish() {
-				showToast("地图载入完毕！");
+				showToast("Map Loaded！");
 			}
 			
-			/**
-			 *  地图完成带动画的操作（如: animationTo()）后，此回调被触发
-			 */
 			@Override
 			public void onMapAnimationFinish() {
 				
 			}
 			
-			/**
-			 *  当调用过 mMapView.getCurrentMap()后，此回调会被触发
-			 *  可在此保存截图至存储设备
-			 */
 			@Override
 			public void onGetCurrentMap(Bitmap arg0) {
 				
 			}
 			
-			/**
-			 * 点击地图上被标记的点回调此方法
-			 * 
-			 */
 			@Override
 			public void onClickMapPoi(MapPoi arg0) {
 				if (arg0 != null){
@@ -149,17 +125,26 @@ public class PathMapActivity extends Activity {
 			}
 		});
         
+        // use getSupportActionBar to get the ActionBar instance  
+        mActionBar = getSupportActionBar(); 
         
+        // hide Title  
+        mActionBar.setDisplayShowTitleEnabled(true);  
+        // hide Home LOGO  
+        mActionBar.setDisplayShowHomeEnabled(true); 
+        // show arrow
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setTitle(this.getIntent().getStringExtra(Constant.START_TIME));
 	}
 
 	private List<GeoPoint> setRoute () {
-		int id = this.getIntent().getIntExtra("id", 0);
+		int id = this.getIntent().getIntExtra(Constant.ID, 0);
 		List<ActivityPath> result = mDBManager.getPathActivities(id);
 		Collections.sort(result, new AcitvityPathComparator());
 		
 		List<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
 		/**
-         * 保存精度和纬度的类,
+         * GeoPoint is for storing latitudes and longitude
          */
 		for (ActivityPath ap : result) {
 			GeoPoint p = new GeoPoint((int)(ap.getLatitude() * 1E6), (int)(ap.getLongitude()* 1E6));
@@ -173,7 +158,8 @@ public class PathMapActivity extends Activity {
 		
 		GeoPoint [][] routeData = new GeoPoint[1][];
 		routeData[0] = step;
-		//用站点数据构建一个MKRoute
+		
+		//use step to build a MKRoute
 		MKRoute route = new MKRoute();
 		route.customizeRoute(start, stop, routeData);
         
@@ -188,7 +174,6 @@ public class PathMapActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
-    	//MapView的生命周期与Activity同步，当activity挂起时需调用MapView.onPause()
 		mMapView.onResume();
 		super.onResume();
 	}
@@ -197,17 +182,14 @@ public class PathMapActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		//MapView的生命周期与Activity同步，当activity挂起时需调用MapView.onPause()
 		mMapView.onPause();
 		super.onPause();
 	}
 
 	@Override
 	protected void onDestroy() {
-		//MapView的生命周期与Activity同步，当activity销毁时需调用MapView.destroy()
 		mMapView.destroy();
 		
-		//退出应用调用BMapManager的destroy()方法
 		if(mBMapManager != null){
 			mBMapManager.destroy();
 			mBMapManager = null;
@@ -219,7 +201,7 @@ public class PathMapActivity extends Activity {
 	
 	
 	 /** 
-     * 显示Toast消息 
+     * show Toast message 
      * @param msg 
      */  
     private void showToast(String msg){  
@@ -232,6 +214,16 @@ public class PathMapActivity extends Activity {
         mToast.show();  
     } 
 	
-	
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {  
+        case android.R.id.home:  
+        	finish();
+            break;  
+        default:  
+            break;  
+        }  
+        return super.onOptionsItemSelected(item);  
+	}
 }
 
