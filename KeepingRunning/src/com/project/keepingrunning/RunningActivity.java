@@ -79,7 +79,7 @@ public class RunningActivity extends SherlockActivity {
 		mRecordTime = new Time();
 		mDF = new DecimalFormat("0.0");
 		mDBManager = new DBManager(this);
-		mActivityID = mDBManager.getRunActivityCount() + 1;
+		mActivityID = mDBManager.getMaxRunActivityID() + 1;
 		runActivity = new RunActivity();
 		activityPaths = new ArrayList<ActivityPath>();
 		mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -157,7 +157,7 @@ public class RunningActivity extends SherlockActivity {
 				String strMin = min<10? "0"+min:min+"";
 				int sec = mTime%60;
 				String strSec = sec<10? "0"+sec:sec+"";
-				tvUsedTime.setText("Time: "+ strMin + "'' " + strSec +"'" );
+				tvUsedTime.setText("Time: "+ strMin + "' " + strSec +"\"" );
 				if (mTag == 2 && mTime <= pbLimitation.getMax()) {
 					pbLimitation.setProgress(mTime);
 					if (mTime == pbLimitation.getMax()) {

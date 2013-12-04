@@ -27,12 +27,15 @@ public class HomeActivity extends SherlockActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
+		Intent intent = null;
 		switch (item.getItemId()) {  
-        case R.id.activity_record :  
-            Toast.makeText(this, "menu_record", Toast.LENGTH_SHORT).show(); 
+        case R.id.activity_record : 
+        	intent = new Intent(this, RecordActivity.class);
+        	startActivity(intent);
+//            Toast.makeText(this, "menu_record", Toast.LENGTH_SHORT).show(); 
             break;  
         case R.id.start_activity:
-        	Intent intent = new Intent(this, RunTypeActivity.class);
+        	intent = new Intent(this, RunTypeActivity.class);
         	startActivity(intent);
         	break;
         case android.R.id.home:  

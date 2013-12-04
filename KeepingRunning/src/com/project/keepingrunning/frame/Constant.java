@@ -9,4 +9,11 @@ public class Constant {
 	public final static String DISTANCE = "distance";
 	public final static String TIME= "time";
 	public final static String SOURCE = "source";
+	public final static String SPEND_TIME = "spend_time";
+	public final static String START_TIME = "start_time";
+	public final static String END_TIME = "end_time";
+	public final static String SPEED = "speed";
+	public final static String ID = "id";
+	public final static String ACTIVITY_ID = "activity_id";
+	public final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 }
