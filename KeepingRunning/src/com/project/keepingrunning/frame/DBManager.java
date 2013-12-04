@@ -94,6 +94,30 @@ public class DBManager {
     	return result;
     }
     
+    public List<RunActivity> getRunPathActivities() {
+    	List<RunActivity> result = new ArrayList<RunActivity>();
+    	
+    	Cursor c = db.rawQuery("SELECT * FROM " + Constant.TABLE_ACTIVITY + " ORDER BY " + Constant.START_TIME + " desc", null);
+    	
+    	while (c.moveToNext()) {  
+    		RunActivity ra = new RunActivity();
+    		int columnIndex = c.getColumnIndex(Constant.ID);
+    		ra.setId(c.getInt(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.DISTANCE);
+    		ra.setDistance(c.getDouble(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.START_TIME);
+    		ra.setStartTime(c.getString(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.END_TIME);
+    		ra.setEndTime(c.getString(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.SPEED);
+    		ra.setSpeed(c.getDouble(columnIndex));
+    		result.add(ra);
+        }  
+        c.close();
+    	
+    	return result;
+    }
+    
     public void deleteRunActivity(int id) {
     	db.beginTransaction();  // start transaction 
         try {  

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="fill_parent"
-android:layout_height="wrap_content" 
-android:background="#ffffff">
+android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -16,7 +15,6 @@ android:background="#ffffff">
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:text="第一行文字"
             android:textColor="#0000CC"
             android:textSize="15sp" />
 
@@ -25,7 +23,6 @@ android:background="#ffffff">
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="第二行KM"
             android:textColor="#000000"
             android:textSize="25sp" />
         </LinearLayout>
@@ -63,7 +60,6 @@ android:background="#ffffff">
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/speed_logo"
             android:layout_alignBottom="@id/speed_logo"
-            android:text="第3行KM/H"
             android:textSize="16sp" />
         
         <TextView
@@ -74,7 +70,6 @@ android:background="#ffffff">
             android:layout_below="@id/speed"
             android:layout_alignLeft="@id/speed"
             android:layout_alignBottom="@id/timer_logo"
-            android:text="第二行文字"
             android:textSize="16sp" />
 	</RelativeLayout>
 	
