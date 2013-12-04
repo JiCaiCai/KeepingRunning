@@ -15,5 +15,8 @@ public class Constant {
 	public final static String SPEED = "speed";
 	public final static String ID = "id";
 	public final static String ACTIVITY_ID = "activity_id";
+	public final static String LATITUDE = "latitude";
+	public final static String LONGITUDE = "longitude";
+	public final static String RECORD_TIME = "record_time";
 	public final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 }
