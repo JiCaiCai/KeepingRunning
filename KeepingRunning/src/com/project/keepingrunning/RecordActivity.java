@@ -11,7 +11,6 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,8 +30,10 @@ import com.project.keepingrunning.object.RunActivity;
 public class RecordActivity extends SherlockActivity{
 
     private ListView listView;
+    private SimpleAdapter mySimpleAdapter = null;
     private ActionBar mActionBar;
     private DBManager mDBManager = null;
+    private ArrayList<HashMap<String,String>> runActivityList = null;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +45,9 @@ public class RecordActivity extends SherlockActivity{
         List<RunActivity> activityList = mDBManager.getRunActivities();
         
       //create ArrayList and add data into it       
-        ArrayList<HashMap<String,String>> runActivityList = getRunActivityList(activityList); 
+        runActivityList = getRunActivityList(activityList); 
         
-        SimpleAdapter mySimpleAdapter=new SimpleAdapter(this, 
+        mySimpleAdapter = new SimpleAdapter(this, 
         		runActivityList,//data source               
         		R.layout.list_item,               
         		new String[]{Constant.START_TIME, Constant.DISTANCE,Constant.SPEED, Constant.SPEND_TIME},                
@@ -91,7 +92,7 @@ public class RecordActivity extends SherlockActivity{
         		 HashMap<String,String> map=(HashMap<String,String>)listView.getItemAtPosition(arg2);                 
          		 Integer id= Integer.valueOf(map.get(Constant.ID));
          		 String startTime=map.get(Constant.START_TIME); 
-         		 showCautious(id, startTime);
+         		 showCautious(id, startTime, arg2);
          		 
                  return false;  
              } 
@@ -99,16 +100,18 @@ public class RecordActivity extends SherlockActivity{
 		
     }
     
-   private void showCautious(final Integer id,String startTime) {
+   private void showCautious(final Integer id,String startTime, final int pos) {
 		new AlertDialog.Builder(RecordActivity.this).setTitle("Cautious")
         .setMessage("Delete this record(start time : "+startTime+")?")
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             	mDBManager.deleteRunActivity(id);
-            	finish();
-            	Intent intent = new Intent(RecordActivity.this, RecordActivity.class);
-            	startActivity(intent);
+            	runActivityList.remove(pos);
+            	mySimpleAdapter.notifyDataSetChanged();
+//            	finish();
+//            	Intent intent = new Intent(RecordActivity.this, RecordActivity.class);
+//            	startActivity(intent);
             }})
         .setNegativeButton("No", null)
         .create().show();
