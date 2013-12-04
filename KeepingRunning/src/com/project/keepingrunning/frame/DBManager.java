@@ -118,6 +118,34 @@ public class DBManager {
     	return result;
     }
     
+    public List<ActivityPath> getPathActivities(int id) {
+    	List<ActivityPath> result = new ArrayList<ActivityPath>();
+    	
+    	Cursor c = db.rawQuery("SELECT * FROM " + Constant.TABLE_ACTIVITYPATH +
+    			" WHERE " + Constant.ACTIVITY_ID + "=? " +
+    			" ORDER BY " + Constant.RECORD_TIME + " asc", new String[]{String.valueOf(id)});
+    	
+    	while (c.moveToNext()) {  
+    		ActivityPath pma = new ActivityPath();
+    		int columnIndex = c.getColumnIndex(Constant.ID);
+    		pma.setId(c.getInt(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.ACTIVITY_ID);
+    		pma.setActivityID(c.getInt(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.LATITUDE);
+    		pma.setLatitude(c.getDouble(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.LONGITUDE);
+    		pma.setLongitude(c.getDouble(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.SPEED);
+    		pma.setSpeed(c.getDouble(columnIndex));
+    		columnIndex = c.getColumnIndex(Constant.RECORD_TIME);
+    		pma.setRecordTime(c.getString(columnIndex));
+    		result.add(pma);
+        }  
+        c.close();
+    	
+    	return result;
+    }
+    
     public void deleteRunActivity(int id) {
     	db.beginTransaction();  // start transaction 
         try {  

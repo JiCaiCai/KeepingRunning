@@ -1,11 +1,14 @@
 package com.project.keepingrunning.map;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.baidu.location.LocationClient;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
@@ -13,8 +16,13 @@ import com.baidu.mapapi.map.MKMapViewListener;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.RouteOverlay;
+import com.baidu.mapapi.search.MKRoute;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.project.keepingrunning.R;
+import com.project.keepingrunning.frame.AcitvityPathComparator;
+import com.project.keepingrunning.frame.DBManager;
+import com.project.keepingrunning.object.ActivityPath;
 
 public class PathMapActivity extends Activity {
 	private Toast mToast;
@@ -32,6 +40,8 @@ public class PathMapActivity extends Activity {
 	 */
 	MKMapViewListener mMapListener = null;
 	
+	private DBManager mDBManager = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,7 +52,7 @@ public class PathMapActivity extends Activity {
 		
 		//第一个参数是API key,
 		//第二个参数是常用事件监听，用来处理通常的网络错误，授权验证错误等，你也可以不添加这个回调接口
-		mBMapManager.init("8b4392b01fa590601a9921e3e5b96ea9", new MKGeneralListener() {
+		mBMapManager.init("170a1e97ef2248b6a5811482c5f4e2ac", new MKGeneralListener() {
 			
 			//授权错误的时候调用的回调函数
 			@Override
@@ -77,21 +87,23 @@ public class PathMapActivity extends Activity {
         /**
          * 设置地图缩放级别
          */
-        mMapController.setZoom(12);
+        mMapController.setZoom(15);
         
         /**
          * 显示内置缩放控件
          */
         mMapView.setBuiltInZoomControls(true);
         
-        /**
-         * 保存精度和纬度的类,
-         */
-        GeoPoint p = new GeoPoint((int)(22.547923 * 1E6), (int)(114.067368 * 1E6));
+        mDBManager = new DBManager(this);
+        
+        List<GeoPoint> geoPointList = setRoute();
+        
         //设置p地方为中心点
-        mMapController.setCenter(p);
+        mMapController.setCenter(geoPointList.get(0));
+        
         mMapView.regMapViewListener(mBMapManager, new MKMapViewListener() {
 			
+        	
         	/**
         	 * 地图移动完成时会回调此接口 方法
         	 */
@@ -136,9 +148,43 @@ public class PathMapActivity extends Activity {
 				}
 			}
 		});
+        
+        
 	}
 
-
+	private List<GeoPoint> setRoute () {
+		int id = this.getIntent().getIntExtra("id", 0);
+		List<ActivityPath> result = mDBManager.getPathActivities(id);
+		Collections.sort(result, new AcitvityPathComparator());
+		
+		List<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
+		/**
+         * 保存精度和纬度的类,
+         */
+		for (ActivityPath ap : result) {
+			GeoPoint p = new GeoPoint((int)(ap.getLatitude() * 1E6), (int)(ap.getLongitude()* 1E6));
+			geoPointList.add(p);
+		} 
+		
+		GeoPoint start = geoPointList.get(0);
+		GeoPoint stop  = geoPointList.get(geoPointList.size()-1);
+		
+		GeoPoint[] step = geoPointList.toArray(new GeoPoint[geoPointList.size()]);
+		
+		GeoPoint [][] routeData = new GeoPoint[1][];
+		routeData[0] = step;
+		//用站点数据构建一个MKRoute
+		MKRoute route = new MKRoute();
+		route.customizeRoute(start, stop, routeData);
+        
+		RouteOverlay routeOverlay = new RouteOverlay(PathMapActivity.this, mMapView);
+		routeOverlay.setData(route);
+		
+		mMapView.getOverlays().add(routeOverlay);
+		mMapView.refresh();
+		
+		return geoPointList;
+	}
 	
 	@Override
 	protected void onResume() {

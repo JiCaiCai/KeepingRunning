@@ -5,12 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +27,8 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.project.keepingrunning.frame.Constant;
 import com.project.keepingrunning.frame.DBManager;
+import com.project.keepingrunning.frame.RunActivityComparator;
+import com.project.keepingrunning.map.PathMapActivity;
 import com.project.keepingrunning.object.RunActivity;
 
 public class RecordActivity extends SherlockActivity{
@@ -43,6 +47,7 @@ public class RecordActivity extends SherlockActivity{
         
         mDBManager = new DBManager(this);
         List<RunActivity> activityList = mDBManager.getRunActivities();
+        Collections.sort(activityList, new RunActivityComparator());
         
       //create ArrayList and add data into it       
         runActivityList = getRunActivityList(activityList); 
@@ -76,10 +81,11 @@ public class RecordActivity extends SherlockActivity{
         		//obtain HashMap object                 
         		HashMap<String,String> map=(HashMap<String,String>)listView.getItemAtPosition(arg2);                 
         		String id=map.get(Constant.ID);                 
-        		String start_time=map.get(Constant.START_TIME);                 
-        		Toast.makeText(getApplicationContext(), 
-        			"你选择了第"+arg2+"个Item，id的值是："+id+"start_time的值是:"+start_time, 
-        			Toast.LENGTH_SHORT).show();             
+        		String start_time=map.get(Constant.START_TIME);
+        		Intent pathMapIntent = new Intent(RecordActivity.this, PathMapActivity.class);
+        		pathMapIntent.putExtra("id", Integer.valueOf(id));           
+        		pathMapIntent.putExtra("startTime", start_time);
+        		startActivity(pathMapIntent);
         	}                      
         });
         
@@ -125,12 +131,23 @@ public class RecordActivity extends SherlockActivity{
         	long duration = getDuration(runActivity);
         	map.put(Constant.DISTANCE, numberFormat.format(runActivity.getDistance()/1000)+"km");             
         	map.put(Constant.SPEED, numberFormat.format(runActivity.getDistance()/(duration/1000))+"m/s");             
-        	map.put(Constant.START_TIME, runActivity.getStartTime());             
+        	map.put(Constant.START_TIME, formatDateOutPut(runActivity.getStartTime()));             
         	map.put(Constant.SPEND_TIME, getDurationStr(duration));             
         	map.put(Constant.ID, String.valueOf(runActivity.getId()));             
         	runActivityList.add(map); 
         }
         return runActivityList; 
+    }
+    
+    private String formatDateOutPut(String startTime) {
+    	SimpleDateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
+    	try {
+			Date startDate = df.parse(startTime);
+			return df.format(startDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	return "";
     }
     
     private long getDuration (RunActivity ra) {
@@ -144,7 +161,7 @@ public class RecordActivity extends SherlockActivity{
 			endDateC.setTime(endDate);
 			long duration = endDateC.getTimeInMillis() - startDateC.getTimeInMillis();
 			return duration;
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
     	return 1;
