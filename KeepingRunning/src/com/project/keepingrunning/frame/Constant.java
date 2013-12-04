@@ -16,4 +16,6 @@ public class Constant {
 	public final static String ID = "id";
 	public final static String ACTIVITY_ID = "activity_id";
 	public final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+	
+	public final static int NOTICE_ID = 3303;
 }

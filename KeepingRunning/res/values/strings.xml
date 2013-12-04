@@ -23,6 +23,8 @@
     <string name="title_activity_running">Running</string>
     <string name="preset_task">Progress Achieved:</string>
     <string name="task_notification">Good job! you finish the task!</string>
+    <string name="locating">Locating&#8230;</string>
+    <string name="no_task">No Task!</string>
 
     <string name="title_activity_record">Record List</string>
     <string name="speed">speed</string>

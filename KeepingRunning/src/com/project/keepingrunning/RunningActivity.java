@@ -17,11 +17,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -47,6 +50,8 @@ public class RunningActivity extends SherlockActivity {
 	private Time mRecordTime;
 	private int mTag = 0;
 	private NotificationManager mManager = null;
+	private boolean mLocating = true;
+	private Notification mNotification = null;
 	
 	// Timer
 	private static Handler mHandler = null;
@@ -61,8 +66,10 @@ public class RunningActivity extends SherlockActivity {
 	private TextView tvRunSpeed = null;
 	private TextView tvRunDistance = null;
 	private TextView tvNotification = null;
+	private LinearLayout llDashBoard = null;
 	private ProgressBar pbLimitation = null;
 	private Button btnStop = null;
+	private RemoteViews rvNotificationProgress = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +96,10 @@ public class RunningActivity extends SherlockActivity {
 		tvRunSpeed = (TextView) findViewById(R.id.run_speed);
 		tvRunDistance = (TextView) findViewById(R.id.run_distance);
 		tvNotification = (TextView) findViewById(R.id.task_notification);
+		llDashBoard = (LinearLayout) findViewById(R.id.dash_board);
 		pbLimitation = (ProgressBar) findViewById(R.id.limit_bar);
 		btnStop = (Button) findViewById(R.id.run_stop);
+		rvNotificationProgress = new RemoteViews(getPackageName(), R.layout.notification_view);
 		
 		btnStop.setOnClickListener(new OnClickListener() {
 			
@@ -120,8 +129,6 @@ public class RunningActivity extends SherlockActivity {
 		initLocator();
 		// initialize the timer 
 		initialTimer();
-		// show notification bar
-		//showNotification();
 	}
 
 	/**
@@ -131,9 +138,9 @@ public class RunningActivity extends SherlockActivity {
 	private void showNotification() {
 		// TODO Auto-generated method stub
 		Notification.Builder mBuilder = new Notification.Builder(RunningActivity.this)
-			.setSmallIcon(R.drawable.icon)
-			.setContentTitle("5 new message")
-			.setContentText("Test");
+		.setSmallIcon(R.drawable.icon)
+		.setContent(rvNotificationProgress)
+		.setOngoing(true);
 		mBuilder.setTicker("Start your running!");
 		
 		// construct Intent
@@ -142,7 +149,8 @@ public class RunningActivity extends SherlockActivity {
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(resultPendingIntent);
 		
-		mManager.notify(0, mBuilder.build());
+		mNotification = mBuilder.build();
+		mManager.notify(Constant.NOTICE_ID, mNotification);
 	}
 
 	private void initialTimer() {
@@ -152,6 +160,7 @@ public class RunningActivity extends SherlockActivity {
 			@Override
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
+				
 				mTime = msg.what;
 				int min = mTime/60;
 				String strMin = min<10? "0"+min:min+"";
@@ -160,6 +169,10 @@ public class RunningActivity extends SherlockActivity {
 				tvUsedTime.setText("Time: "+ strMin + "' " + strSec +"\"" );
 				if (mTag == 2 && mTime <= pbLimitation.getMax()) {
 					pbLimitation.setProgress(mTime);
+					// notification progress bar and text
+	            	rvNotificationProgress.setProgressBar(R.id.notification_progressbar, pbLimitation.getMax(), mTime, false);
+	            	rvNotificationProgress.setTextViewText(R.id.notification_text,  (int)((double)mTime/pbLimitation.getMax()*100) + "%");
+	            	mManager.notify(Constant.NOTICE_ID, mNotification);
 					if (mTime == pbLimitation.getMax()) {
 						tvNotification.setText(getString(R.string.task_notification));
 					}
@@ -174,9 +187,11 @@ public class RunningActivity extends SherlockActivity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Message msg = new Message();
-				msg.what = second++;
-				mHandler.sendMessage(msg);
+				if (!mLocating) {
+					Message msg = new Message();
+					msg.what = second++;
+					mHandler.sendMessage(msg);
+				}
 			}
 			
 		}, 1000, 1000 );
@@ -260,7 +275,15 @@ public class RunningActivity extends SherlockActivity {
             
             // record the start time
             if (runActivity.getStartTime() == null) {
-            	runActivity.setStartTime(location.getTime());
+            	runActivity.setStartTime(getCurrentTime());
+            	// locate successful
+            	mLocating = false;
+            	// notice disappear
+            	tvNotification.setText("");
+            	// show dash board
+            	llDashBoard.setVisibility(View.VISIBLE);
+            	// show notification bar
+        		showNotification();
             }
             
             // update the member
@@ -271,6 +294,11 @@ public class RunningActivity extends SherlockActivity {
             tvRunSpeed.setText("Speed: " + keepTwoDigits(location.getSpeed()) + " m/s");
             if (mTag == 3 && mDistance <= pbLimitation.getMax()) {
             	pbLimitation.setProgress((int) mDistance);
+            	// notification progress bar and text
+            	rvNotificationProgress.setProgressBar(R.id.notification_progressbar, pbLimitation.getMax(), (int) mDistance, false);
+            	rvNotificationProgress.setTextViewText(R.id.notification_text, (int)(mDistance/pbLimitation.getMax()*100) + "%");
+            	mManager.notify(Constant.NOTICE_ID, mNotification);
+            	
             	if (mDistance > pbLimitation.getMax()) {
             		tvNotification.setText(getString(R.string.task_notification));
             	}
@@ -326,7 +354,11 @@ public class RunningActivity extends SherlockActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if(keyCode == KeyEvent.KEYCODE_BACK) {
-	        showCautious();
+	    	if (mLocating) {
+	    		finish();
+	    	} else {
+	    		showCautious();
+	    	}
 	        return false;
 	    }
 	    return super.onKeyDown(keyCode, event);
@@ -339,7 +371,9 @@ public class RunningActivity extends SherlockActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             	saveDataToDB();
+            	mManager.cancel(Constant.NOTICE_ID);
             	finish();
+            	//Intent intent = new Intent(RunningActivity.this, RecordActivity.class);
             }})
         .setNegativeButton("No", null)
         .create().show();

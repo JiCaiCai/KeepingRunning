@@ -59,7 +59,8 @@
         </activity>
         <activity
             android:name="com.project.keepingrunning.RunningActivity"
-            android:label="@string/title_activity_running" >
+            android:label="@string/title_activity_running"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name="com.project.keepingrunning.RecordActivity"

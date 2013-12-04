@@ -2,6 +2,7 @@ package com.project.keepingrunning;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,8 +69,9 @@ public class ItemFragment extends SherlockFragment {
 				}
 				Intent intent = new Intent(getActivity(), RunningActivity.class);
 				intent.putExtra(Constant.SOURCE, 3);
-				intent.putExtra(Constant.DISTANCE, distance*1000);
+				intent.putExtra(Constant.DISTANCE, (int)(distance*1000));
 				startActivity(intent);
+				getActivity().finish();
 			}
 		});
 		
@@ -123,11 +125,12 @@ public class ItemFragment extends SherlockFragment {
 				intent.putExtra(Constant.SOURCE, 2);
 				intent.putExtra(Constant.TIME, time*60);
 				startActivity(intent);
+				getActivity().finish();
 			}
 		});
 		
 		//  set the initial value of seekbar  
-		seekRunDuration.setMax(300);  
+		seekRunDuration.setMax(90);  
 		seekRunDuration.setProgress(0);  
         runDuration.setText(seekRunDuration.getProgress()+"");  
 		
@@ -167,6 +170,7 @@ public class ItemFragment extends SherlockFragment {
 				Intent intent = new Intent(getActivity(), RunningActivity.class);
 				intent.putExtra(Constant.SOURCE, 1);
 				startActivity(intent);
+				getActivity().finish();
 			}
 		});
 	}
