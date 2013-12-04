@@ -1,7 +1,10 @@
 package com.project.keepingrunning;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,6 +38,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.project.keepingrunning.frame.Constant;
 import com.project.keepingrunning.frame.DBManager;
+import com.project.keepingrunning.frame.Util;
 import com.project.keepingrunning.object.ActivityPath;
 import com.project.keepingrunning.object.RunActivity;
 
@@ -339,7 +343,7 @@ public class RunningActivity extends SherlockActivity {
         int minute = mRecordTime.minute;   
         int hour = mRecordTime.hour;   
         int sec = mRecordTime.second;
-		return year+"-"+month+"-"+day+" "+hour+":"+minute+":"+sec;
+		return Util.formatDateOutPut(year+"-"+month+"-"+day+" "+hour+":"+minute+":"+sec);
 	}
 
 	@Override

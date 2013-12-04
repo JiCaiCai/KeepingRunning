@@ -28,6 +28,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.project.keepingrunning.frame.Constant;
 import com.project.keepingrunning.frame.DBManager;
 import com.project.keepingrunning.frame.RunActivityComparator;
+import com.project.keepingrunning.frame.Util;
 import com.project.keepingrunning.map.PathMapActivity;
 import com.project.keepingrunning.object.RunActivity;
 
@@ -131,23 +132,12 @@ public class RecordActivity extends SherlockActivity{
         	long duration = getDuration(runActivity);
         	map.put(Constant.DISTANCE, numberFormat.format(runActivity.getDistance()/1000)+"km");             
         	map.put(Constant.SPEED, numberFormat.format(runActivity.getDistance()/(duration/1000))+"m/s");             
-        	map.put(Constant.START_TIME, formatDateOutPut(runActivity.getStartTime()));             
+        	map.put(Constant.START_TIME, Util.formatDateOutPut(runActivity.getStartTime()));             
         	map.put(Constant.SPEND_TIME, getDurationStr(duration));             
         	map.put(Constant.ID, String.valueOf(runActivity.getId()));             
         	runActivityList.add(map); 
         }
         return runActivityList; 
-    }
-    
-    private String formatDateOutPut(String startTime) {
-    	SimpleDateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
-    	try {
-			Date startDate = df.parse(startTime);
-			return df.format(startDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    	return "";
     }
     
     private long getDuration (RunActivity ra) {
