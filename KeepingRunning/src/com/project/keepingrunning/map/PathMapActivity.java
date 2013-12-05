@@ -57,7 +57,7 @@ public class PathMapActivity extends SherlockActivity {
 		
 		//the first parameter is API key,
 		//the second parameter is common event listener
-		mBMapManager.init("170a1e97ef2248b6a5811482c5f4e2ac", new MKGeneralListener() {
+		mBMapManager.init(Constant.BAIDUKEY, new MKGeneralListener() {
 			
 			//this method will be called when the authority is denied 
 			@Override

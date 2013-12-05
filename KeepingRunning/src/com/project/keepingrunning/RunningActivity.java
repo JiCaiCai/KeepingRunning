@@ -254,6 +254,7 @@ public class RunningActivity extends SherlockActivity {
 
 	public class BDLocationListenerImpl implements BDLocationListener {
 		private BDLocation mLastLoc = null;
+		private boolean isExceed = false;
 		
 		@Override
 		public void onReceiveLocation(BDLocation location) {
@@ -296,16 +297,24 @@ public class RunningActivity extends SherlockActivity {
             // update the interface
             tvRunDistance.setText("Distance: " + keepTwoDigits(mDistance/1000) + " km");
             tvRunSpeed.setText("Speed: " + keepTwoDigits(location.getSpeed()) + " m/s");
-            if (mTag == 3 && mDistance <= pbLimitation.getMax()) {
-            	pbLimitation.setProgress((int) mDistance);
-            	// notification progress bar and text
-            	rvNotificationProgress.setProgressBar(R.id.notification_progressbar, pbLimitation.getMax(), (int) mDistance, false);
-            	rvNotificationProgress.setTextViewText(R.id.notification_text, (int)(mDistance/pbLimitation.getMax()*100) + "%");
-            	mManager.notify(Constant.NOTICE_ID, mNotification);
+            if (mTag == 3 && !isExceed) {
+            	int progress = (int) mDistance;
+            	int notiProgress = progress;
+            	String notiText = (int)(mDistance/pbLimitation.getMax()*100) + "%";
             	
             	if (mDistance > pbLimitation.getMax()) {
             		tvNotification.setText(getString(R.string.task_notification));
+            		isExceed = true;
+            		progress = pbLimitation.getMax();
+            		notiProgress = pbLimitation.getMax();
+            		notiText = "100%";
             	}
+            	
+            	pbLimitation.setProgress(progress);
+            	// notification progress bar and text
+            	rvNotificationProgress.setProgressBar(R.id.notification_progressbar, pbLimitation.getMax(), notiProgress, false);
+            	rvNotificationProgress.setTextViewText(R.id.notification_text, notiText);
+            	mManager.notify(Constant.NOTICE_ID, mNotification);
             }
             
             // save those path
