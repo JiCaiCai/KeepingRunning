@@ -43,7 +43,8 @@
 
         <activity
             android:name="com.project.keepingrunning.HomeActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,15 +56,19 @@
             android:label="@string/title_activity_run_type"
             android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         </activity>
-        <activity android:name="com.project.keepingrunning.map.PathMapActivity" >
+        <activity 
+            android:name="com.project.keepingrunning.map.PathMapActivity" 
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
         </activity>
         <activity
             android:name="com.project.keepingrunning.RunningActivity"
             android:label="@string/title_activity_running"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
             android:launchMode="singleTask" >
         </activity>
         <activity
             android:name="com.project.keepingrunning.RecordActivity"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
             android:label="@string/title_activity_record" >
         </activity>
     </application>
