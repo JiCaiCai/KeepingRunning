@@ -13,6 +13,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -283,8 +284,10 @@ public class RunningActivity extends SherlockActivity {
             	tvNotification.setText("");
             	// show dash board
             	llDashBoard.setVisibility(View.VISIBLE);
-            	// show notification bar
-        		showNotification();
+            	// show notification bar if the android version is more than 4.0
+            	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            		showNotification();
+            	}
             }
             
             // update the member
