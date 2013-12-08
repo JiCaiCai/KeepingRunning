@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item  
+        android:id="@+id/activity_record"  
+        android:orderInCategory="1"  
+        android:showAsAction="ifRoom|withText"  
+        android:title="@string/run_record"/>  
+        
+    
+    <item  
+        android:id="@+id/start_activity"  
+        android:orderInCategory="2"  
+        android:showAsAction="ifRoom|withText"  
+        android:title="@string/start_activity"/>  
+  
+</menu>

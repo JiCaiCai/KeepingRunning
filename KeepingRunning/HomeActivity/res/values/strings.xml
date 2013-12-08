@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">KeepingRunning</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Home -->
+    <string name="run_record">Record</string>
+    <string name="start_activity">Start</string>
+    <string name="free_run">Free Run</string>
+	<string name="set_destination">Set Desination</string>
+    <!-- Run Type -->
+    <string name="title_activity_run_type">Choose Your Type</string>
+    <string name="run_type_one">Basic Mode</string>
+    <string name="run_type_two">Time Mode</string>
+    <string name="run_type_three">Distance Mode</string>
+    <string name="start_run">Run!</string>
+    <string name="duration">Duration:</string>
+    <string name="distance">Distance:</string>
+    <string name="time_unit">min</string>
+    <string name="length_unit">km</string>
+
+    <!-- Running -->
+    <string name="title_activity_running">Running</string>
+    <string name="preset_task">Progress Achieved:</string>
+    <string name="task_notification">Good job! you finish the task!</string>
+    <string name="task_failed_notification">oh you failed !</string>
+    <string name="locating">Locating&#8230;</string>
+    <string name="no_task">No Task!</string>
+
+    <string name="title_activity_record">Record List</string>
+    <string name="speed">speed</string>
+    <string name="timer">timer</string>
+	
+</resources>

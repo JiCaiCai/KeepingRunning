@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="run_type">
+        <item>Basic</item>
+        <item>Time</item>
+        <item>Distance</item>
+    </string-array>
+</resources>

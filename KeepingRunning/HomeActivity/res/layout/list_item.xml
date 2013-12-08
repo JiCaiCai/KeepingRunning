@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/start_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:textColor="#0000CC"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textColor="#000000"
+            android:textSize="25sp" />
+        </LinearLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/relativeLayout1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@id/linearLayout1"
+		android:layout_alignBottom="@id/linearLayout1"
+		android:layout_marginBottom="8dp"
+		android:layout_marginLeft="35dp">
+        
+        <ImageView
+        android:id="@+id/speed_logo"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/speed"
+        android:layout_margin="3dp"
+        android:contentDescription="@string/speed"/>
+        
+        <ImageView
+        android:id="@+id/timer_logo"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/timer"
+        android:layout_alignLeft="@id/speed_logo"
+        android:layout_below="@id/speed_logo"
+        android:contentDescription="@string/timer"/>
+        
+        <TextView
+            android:id="@+id/speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/speed_logo"
+            android:layout_alignBottom="@id/speed_logo"
+            android:textSize="16sp" />
+        
+        <TextView
+            android:id="@+id/spend_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_below="@id/speed"
+            android:layout_alignLeft="@id/speed"
+            android:layout_alignBottom="@id/timer_logo"
+            android:textSize="16sp" />
+	</RelativeLayout>
+	
+</RelativeLayout>
+
