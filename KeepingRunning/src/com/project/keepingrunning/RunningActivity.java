@@ -231,7 +231,7 @@ public class RunningActivity extends SherlockActivity {
         LocationClientOption option = new LocationClientOption();  
         option.setOpenGps(true); // open GPS
         option.setAddrType("all");
-        option.setCoorType("GCJ02"); 
+        option.setCoorType("bd09ll");
         option.setPriority(LocationClientOption.GpsFirst); // GPS has the highest priority 
         option.setScanSpan(5000); // time interval 5000ms  
         option.disableCache(false);         
